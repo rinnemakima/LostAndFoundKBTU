@@ -7,6 +7,7 @@ import { Observable } from 'rxjs';
 @Component({
   selector: 'app-item',
   imports: [],
+  standalone: true,
   templateUrl: './item.component.html',
   styleUrl: './item.component.css'
 })
