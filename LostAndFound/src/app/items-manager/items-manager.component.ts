@@ -3,13 +3,14 @@ import { LostItem } from '../models/lost-item.model';
 import { OnInit } from '@angular/core';
 import { ItemComponent } from '../item/item.component';
 import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 
 @Component({ 
   selector: 'app-items-manager', 
   templateUrl: './items-manager.component.html',
   standalone: true,
-  imports: [FormsModule], 
+  imports: [FormsModule, CommonModule], 
 })
 export class ItemsManagerComponent implements OnInit {
   lostItems: LostItem[] = [];

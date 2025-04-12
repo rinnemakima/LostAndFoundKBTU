@@ -1,1 +1,29 @@
-<p>items-manager works!</p>
+<h3>Report a Lost Item</h3>
+<form (ngSubmit)="reportLostItem()">
+  <input [(ngModel)]="newLostItem.name" name="name" placeholder="Item Name" required>
+  <input [(ngModel)]="newLostItem.location" name="location" placeholder="Location" required>
+  <textarea [(ngModel)]="newLostItem.description" name="description" placeholder="Description"></textarea>
+  <button type="submit">Submit</button>
+</form>
+
+<h3>Lost Items</h3>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Location</th>
+      <th>Date</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let item of lostItems">
+      <td>{{ item.name }}</td>
+      <td>{{ item.description }}</td>
+      <td>{{ item.location }}</td>
+      <td>{{ item.date | date }}</td>
+      <td><button (click)="markAsFound(item.id)">Mark as Found</button></td>
+    </tr>
+  </tbody>
+</table>
