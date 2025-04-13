@@ -7,4 +7,5 @@ export interface LostItem {
   location: string;
   date: Date;
   user: User;
+  image?:string;
 }

@@ -1,39 +1,63 @@
-import { Component } from '@angular/core';
-import { LostItem } from '../models/lost-item.model'; 
-import { OnInit } from '@angular/core';
-import { ItemComponent } from '../item/item.component';
-import { FormsModule } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { LostItemService } from '../services/lost-item.service';
+import { FoundItemService } from '../services/found-item.service';
+import { LostItemListComponent } from '../lost-item-list/lost-item-list.component';
+import { FoundItemListComponent } from '../found-item-list/found-item-list.component';
 import { CommonModule } from '@angular/common';
+import { LostItem } from '../models/lost-item.model';
+import { FoundItem } from '../models/found-item.model';
 
-
-@Component({ 
-  selector: 'app-items-manager', 
+@Component({
+  selector: 'app-item-manager',
+  imports: [
+    CommonModule,
+    LostItemListComponent,
+    FoundItemListComponent,
+  ],
   templateUrl: './items-manager.component.html',
-  standalone: true,
-  imports: [FormsModule, CommonModule], 
+  styleUrls: ['./items-manager.component.css']
 })
 export class ItemsManagerComponent implements OnInit {
   lostItems: LostItem[] = [];
-  newLostItem: Partial<LostItem> = {};
+  foundItems: FoundItem[] = [];
 
-  constructor(private itemService: ItemComponent) {}
+  showForm = false;
+  loading = false;
+  errorMessage = '';
+
+  constructor(
+    private lostItemService: LostItemService,
+    private foundItemService: FoundItemService
+  ) {}
 
   ngOnInit() {
-    this.loadItems();
+    this.lostItemService.getLostItems().subscribe(data => this.lostItems = data);
+    this.foundItemService.getFoundItems().subscribe(data => this.foundItems = data);
   }
 
   loadItems() {
-    this.itemService.getLostItems().subscribe(data => this.lostItems = data);
-  }
+    this.loading = true;
+    this.errorMessage = '';
 
-  reportLostItem() {
-    this.itemService.reportLostItem(this.newLostItem).subscribe(() => {
-      this.newLostItem = {};
-      this.loadItems();
+    this.lostItemService.getLostItems().subscribe({
+      next: (items) => {
+        this.lostItems = items;
+        this.loading = false;
+      },
+      error: (err) => {
+        this.errorMessage = 'Failed to load lost items.';
+        this.loading = false;
+      }
+    });
+
+    this.foundItemService.getFoundItems().subscribe({
+      next: (items) => (this.foundItems = items),
+      error: (err) => (this.errorMessage = 'Failed to load found items.')
     });
   }
 
-  markAsFound(itemId: number) {
-    this.itemService.deleteLostItem(itemId).subscribe(() => this.loadItems());
+  handleFormSubmit() {
+    this.showForm = false;
+    this.loadItems();
   }
 }

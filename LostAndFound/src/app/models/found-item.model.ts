@@ -7,4 +7,5 @@ export interface FoundItem {
   location: string;
   date: Date;
   user: User;
+  image?:string;
 }
