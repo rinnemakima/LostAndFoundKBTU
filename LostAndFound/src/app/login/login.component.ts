@@ -24,16 +24,17 @@ export class LoginComponent {
 
   
   onLogin() {
-    this.userService.loginUser(this.input).subscribe(
-      response => {
-        console.log(response)
-        alert('User ' + this.input.username + ' succesfully logged in.');
+    this.userService.loginUser(this.input).subscribe({
+      next: (response) => {
+        localStorage.setItem('access_token', response.access);
+        localStorage.setItem('refresh_token', response.refresh);
         this.router.navigate(['/home']); 
       },
-      error => {
-        console.log('error', error);
+      error: (error) => {
+        console.error('Login failed:', error);
       }
-    );
+    });
   }
+  
   
 }

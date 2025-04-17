@@ -1,11 +1,13 @@
 from django.urls import path
-from rest_framework.authtoken.views import obtain_auth_token
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenBlacklistView
 from .views import logout_view
 from .views import *
 
 urlpatterns = [
-    path('token/login/', obtain_auth_token, name='api_token_auth'), 
-    path('token/logout/', logout_view, name='api_token_logout'),    
+   path('token/login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('token/logout/', TokenBlacklistView.as_view(), name='token_blacklist'),
+
     path('lost-items/', lost_item_list),
     path('found-items/', found_item_list),
     path('lost-items/<int:id>/', LostItemDetailView.as_view()),
@@ -15,7 +17,6 @@ urlpatterns = [
     path('lost-items/recent/', recent_lost_items_view),
 
     
-    path('users/', UserListCreateView.as_view(), name='user-list-create'),
-    path('users/<int:pk>/', UserRetrieveUpdateView.as_view(), name='user-detail'),
+    path('register/', RegisterView.as_view(), name='register'),
 
 ]

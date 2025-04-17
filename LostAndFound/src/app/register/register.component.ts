@@ -1,18 +1,14 @@
 import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { UserService } from '../services/user.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-register',
   standalone: true,
   imports: [CommonModule, FormsModule],
-  templateUrl: './register.component.html',
-  providers: [UserService],
-  styleUrls: ['./register.component.css']
-
+  templateUrl: './register.component.html'
 })
 export class RegisterComponent {
   register = {
@@ -22,15 +18,19 @@ export class RegisterComponent {
     password: ''
   };
 
-  constructor(private http: HttpClient, private router: Router, private userService: UserService) {}
+  constructor(private http: HttpClient, private router: Router) {}
 
-
-  registerUser(){
-    this.userService.registerNewUser(this.register).subscribe(
-      response => {
-        alert('User ' + this.register.username + ' has been created!' )
+  registerUser() {
+    this.http.post('http://127.0.0.1:8000/api/register/', this.register).subscribe({
+      next: (response) => {
+        console.log('Registration successful', response);
+        alert('Registered successfully! Please log in.');
+        this.router.navigate(['/login']);
       },
-      error => console.log('error: ', error)
-    );  
+      error: (error) => {
+        console.error('Registration failed', error.error);
+        alert('Registration failed. Please check the fields and try again.');
+      }
+    });
   }
 }

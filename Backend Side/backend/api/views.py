@@ -16,28 +16,32 @@ from django.contrib.auth import get_user_model
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateAPIView
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
-
-User = get_user_model()
-
-class UserListCreateView(ListCreateAPIView):
-    queryset = User.objects.all().order_by('-date_joined')
-    serializer_class = UserSerializer
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
+from rest_framework_simplejwt.tokens import RefreshToken
 
 
-class UserRetrieveUpdateView(RetrieveUpdateAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
+class RegisterView(APIView):
+    def post(self, request):
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'message': 'User registered successfully'}, status=status.HTTP_201_CREATED)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def logout_view(request):
-    request.user.auth_token.delete()
-    return Response({"message": "Logged out successfully."})
+    try:
+        refresh_token = request.data["refresh"]
+        token = RefreshToken(refresh_token)
+        token.blacklist()
+        return Response({"message": "Logout successful."}, status=205)
+    except Exception as e:
+        return Response({"error": str(e)}, status=400)
+
 
 @api_view(http_method_names=["GET", "POST"]) 
 @permission_classes([IsAuthenticated])
