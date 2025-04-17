@@ -9,6 +9,7 @@ import { FoundItem } from '../models/found-item.model';
 
 @Component({
   selector: 'app-item-manager',
+  standalone: true,
   imports: [
     CommonModule,
     LostItemListComponent,

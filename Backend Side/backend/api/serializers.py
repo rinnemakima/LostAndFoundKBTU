@@ -1,21 +1,20 @@
 from rest_framework import serializers
-
-from rest_framework import serializers
 from .models import User, MatchItem, LostItem, FoundItem
+from django.contrib.auth import get_user_model
+from django.contrib.auth.password_validation import validate_password
+
+User = get_user_model()
 
 class UserSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
+    username = serializers.CharField()
     email = serializers.EmailField()
     phone_number = serializers.CharField(allow_blank=True, required=False)
+    password = serializers.CharField(write_only=True)
 
     def create(self, validated_data):
-        return User.objects.create(**validated_data)
+        return User.objects.create_user(**validated_data)
 
-    def update(self, instance, validated_data):
-        instance.email = validated_data.get('email', instance.email)
-        instance.phone_number = validated_data.get('phone_number', instance.phone_number)
-        instance.save()
-        return instance
 
 
 class MatchItemSerializer(serializers.Serializer):

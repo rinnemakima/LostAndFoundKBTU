@@ -7,8 +7,30 @@ from rest_framework.views import APIView
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from .models import FoundItem, LostItem, MatchItem
-from .serializers import FoundItemSerializer, LostItemSerializer, MatchItemSerializer
+from .serializers import FoundItemSerializer, LostItemSerializer, MatchItemSerializer, UserSerializer
 
+from django.contrib.auth.models import User
+from rest_framework import viewsets
+from django.contrib.auth import get_user_model
+
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateAPIView
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
+
+User = get_user_model()
+
+class UserListCreateView(ListCreateAPIView):
+    queryset = User.objects.all().order_by('-date_joined')
+    serializer_class = UserSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+
+class UserRetrieveUpdateView(RetrieveUpdateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
 
 
 @api_view(['POST'])

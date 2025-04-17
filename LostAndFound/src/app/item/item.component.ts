@@ -13,7 +13,7 @@ import { Observable } from 'rxjs';
 })
 @Injectable({ providedIn: 'root' })
 export class ItemComponent {
-  private apiUrl = 'http://localhost:5000/api/items';
+  private apiUrl = 'http://localhost:4200/api/items';
 
   constructor(private http: HttpClient) {}
 
