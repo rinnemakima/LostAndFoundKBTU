@@ -1,6 +1,9 @@
-<div>
-  <input type="text" name="username" [(ngModel)]="input.username" required placeholder="Username">
-  <input type="password" name="password" [(ngModel)]="input.password" required placeholder="Password">
+<div class="login-wrapper">
+  <div class="login-container">
+    <h2>Login</h2>
+    <input type="text" name="username" [(ngModel)]="input.username" required placeholder="Username">
+    <input type="password" name="password" [(ngModel)]="input.password" required placeholder="Password">
 
-  <button type="submit" (click)="onLogin()">Login</button>
+    <button type="submit" (click)="onLogin()">Login</button>
+  </div>
 </div>

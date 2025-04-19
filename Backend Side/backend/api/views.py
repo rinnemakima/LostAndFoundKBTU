@@ -18,6 +18,8 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from datetime import timedelta
+from django.utils import timezone
 
 class RegisterView(APIView):
     def post(self, request):
@@ -42,8 +44,14 @@ def logout_view(request):
     except Exception as e:
         return Response({"error": str(e)}, status=400)
 
+@api_view(["GET"])
+@permission_classes([])
+def public_lost_items(request):
+    items = LostItem.objects.all()
+    serializer = LostItemSerializer(items, many=True)
+    return Response(serializer.data)
 
-@api_view(http_method_names=["GET", "POST"]) 
+@api_view(http_method_names=["POST"]) 
 @permission_classes([IsAuthenticated])
 def lost_item_list(request):
     if request.method == "GET":
@@ -54,8 +62,27 @@ def lost_item_list(request):
     elif request.method == "POST":
         serializer = LostItemSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save(user=request.user)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            lost_item = serializer.save(user=request.user)
+
+            matched_items = []
+            found_items = FoundItem.objects.all()
+
+            for found in found_items:
+                if (
+                        found.category == lost_item.category and
+                        found.name == lost_item.name
+                    ):
+                    match = MatchItem.objects.create(
+                        lost_item=lost_item,
+                        found_item=found
+                    )
+                    matched_items.append(match)
+
+            return Response({
+                "lost_item": LostItemSerializer(lost_item).data,
+                "matches_created": MatchItemSerializer(matched_items, many=True).data
+            }, status=status.HTTP_201_CREATED)
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
@@ -89,6 +116,7 @@ def match_item_list(request):
             serializer.save()  
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class LostItemDetailView(APIView):
     permission_classes = [IsAuthenticated]

@@ -12,7 +12,7 @@ export class LostItemService {
   constructor(private http: HttpClient) {}
 
   getLostItems(): Observable<LostItem[]> {
-    return this.http.get<LostItem[]>(this.apiUrl);
+    return this.http.get<LostItem[]>('http://127.0.0.1:8000/api/public-lost-items/');
   }
 
   getLostItemById(id: number): Observable<LostItem> {

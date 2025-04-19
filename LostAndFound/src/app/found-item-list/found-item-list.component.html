@@ -1,14 +1,25 @@
-<div *ngIf="items && items.length; else noItems">
-    <div *ngFor="let item of items" class="item-card">
-      <h4>{{ item.name }}</h4>
-      <p>{{ item.description }}</p>
-      <p><strong>Location:</strong> {{ item.location }}</p>
-      <p><strong>Date Found:</strong> {{ item.date | date }}</p>
-      <img *ngIf="item.image" [src]="item.image" alt="{{ item.name }}" class="item-img" />
-    </div>
-  </div>
-  
-  <ng-template #noItems>
-    <p>No found items reported.</p>
-  </ng-template>
-  
+<h2>Found Items</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Category</th>
+      <th>Color</th>
+      <th>Location</th>
+      <th>Date Lost</th>
+      <th>Image</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let item of items">
+      <td>{{ item.name }}</td>
+      <td>{{ item.description }}</td>
+      <td>{{ item.category }}</td>
+      <td>{{ item.color }}</td>
+      <td>{{ item.location }}</td>
+      <td>{{ item.date | date }}</td>
+      <td>{{ item.image }}</td>
+    </tr>
+  </tbody>
+</table>

@@ -1,0 +1,42 @@
+<h2>Report Lost Item</h2>
+
+<form (ngSubmit)="submitLostItem()" enctype="multipart/form-data">
+  <label>
+    Name:
+    <input type="text" [(ngModel)]="lostItem.name" name="name" required />
+  </label>
+
+  <label>
+    Category:
+    <select [(ngModel)]="lostItem.category" name="category" required>
+      <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+    </select>
+  </label>
+
+  <label>
+    Color:
+    <input type="text" [(ngModel)]="lostItem.color" name="color" />
+  </label>
+
+  <label>
+    Location:
+    <input type="text" [(ngModel)]="lostItem.location" name="location" required />
+  </label>
+
+  <label>
+    Date:
+    <input type="date" [(ngModel)]="lostItem.date" name="date" required />
+  </label>
+
+  <label>
+    Description:
+    <textarea [(ngModel)]="lostItem.description" name="description"></textarea>
+  </label>
+
+  <label>
+    Image:
+    <input type="file" (change)="onFileSelected($event)" />
+  </label>
+
+  <button type="submit">Submit</button>
+</form>

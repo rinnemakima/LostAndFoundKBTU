@@ -10,6 +10,7 @@ import { HttpClient } from "@angular/common/http";
   standalone: true,
   imports: [FormsModule, CommonModule],
   templateUrl: './login.component.html',
+  styleUrls: ['./login.component.css'],
   providers: [UserService],
 })
 export class LoginComponent {
