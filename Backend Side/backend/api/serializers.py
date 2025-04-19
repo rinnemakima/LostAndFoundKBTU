@@ -42,7 +42,7 @@ class LostItemSerializer(serializers.ModelSerializer):
 class FoundItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = FoundItem
-        fields = ('id', 'name', 'description', 'location', 'date', 'image', 'user')
+        fields = ['name', 'description', 'category', 'color', 'location', 'date', 'image']
         read_only_fields = ['user']
 
 

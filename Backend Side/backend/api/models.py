@@ -39,8 +39,18 @@ class LostItem(models.Model):
         return f"Lost {self.name} reported by {self.user.email}"
 
 class FoundItem(models.Model):
-    name = models.CharField(max_length=100)
+    CATEGORY_CHOICES = [
+        ('Electronic', 'Electronic'),
+        ('Accessories', 'Accessories'),
+        ('Transportation Card', 'Transportation Card'),
+        ('ID Card', 'ID Card'),
+        ('Other', 'Other'),
+    ]
+    
+    name = models.CharField(max_length=255)
     description = models.CharField(max_length=255)
+    category = models.CharField(max_length=50, choices=CATEGORY_CHOICES, default='Other')
+    color = models.CharField(max_length=30, blank=True, null=True)
     location = models.CharField(max_length=255)
     date = models.DateField()
     image = models.ImageField(upload_to='found_items/', null=True, blank=True)

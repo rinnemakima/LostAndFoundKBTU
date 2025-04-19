@@ -45,6 +45,8 @@ export class LostItemFormComponent {
       formData.append('image', this.lostItem.image);
     }
 
+    console.log('Token:', localStorage.getItem('access_token'));
+
     this.http.post('http://127.0.0.1:8000/api/lost-items/', formData).subscribe({
       next: (res) => {
         alert('Lost item reported successfully!');

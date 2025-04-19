@@ -7,7 +7,7 @@ import { FoundItem } from '../models/found-item.model';
   providedIn: 'root'
 })
 export class FoundItemService {
-  private apiUrl = 'http://localhost:8000/api/found-items/';
+  private apiUrl = 'http://127.0.0.1:8000/api/public-found-items/';
 
   constructor(private http: HttpClient) {}
 

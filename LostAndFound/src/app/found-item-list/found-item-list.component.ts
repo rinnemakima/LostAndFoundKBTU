@@ -16,12 +16,12 @@ export class FoundItemListComponent {
   constructor(private http: HttpClient) {}
 
   ngOnInit(): void {
-      this.http.get<FoundItem[]>('').subscribe({
+      this.http.get<FoundItem[]>('http://127.0.0.1:8000/api/public-found-items/').subscribe({
         next: data => {
           this.items = data;
         },
         error: err => {
-          console.error('Failed to load lost items:', err);
+          console.error('Failed to load found items:', err);
         }
       });
     }

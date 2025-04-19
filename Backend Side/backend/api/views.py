@@ -51,15 +51,17 @@ def public_lost_items(request):
     serializer = LostItemSerializer(items, many=True)
     return Response(serializer.data)
 
+@api_view(["GET"])
+@permission_classes([])
+def public_found_items(request):
+    items = FoundItem.objects.all()
+    serializer = FoundItemSerializer(items, many=True)
+    return Response(serializer.data)
+
 @api_view(http_method_names=["POST"]) 
 @permission_classes([IsAuthenticated])
 def lost_item_list(request):
-    if request.method == "GET":
-        items = LostItem.objects.all()
-        serializer = LostItemSerializer(items, many=True)
-        return Response(serializer.data)
-    
-    elif request.method == "POST":
+    if request.method == "POST":
         serializer = LostItemSerializer(data=request.data)
         if serializer.is_valid():
             lost_item = serializer.save(user=request.user)
@@ -86,15 +88,11 @@ def lost_item_list(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
-@api_view(http_method_names=["GET", "POST"]) 
+@api_view(http_method_names=["POST"]) 
 @permission_classes([IsAuthenticated])
 def found_item_list(request):
-    if request.method == "GET":
-        items = FoundItem.objects.all()
-        serializer = FoundItemSerializer(items, many=True)
-        return Response(serializer.data)
-    
-    elif request.method == "POST":
+
+    if request.method == "POST":
         serializer = FoundItemSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(user=request.user)
