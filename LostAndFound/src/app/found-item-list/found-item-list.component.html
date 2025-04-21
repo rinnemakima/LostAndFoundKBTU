@@ -8,7 +8,7 @@
       <th>Color</th>
       <th>Location</th>
       <th>Date Lost</th>
-      <th>Image</th>
+      <th>User</th>
     </tr>
   </thead>
   <tbody>
@@ -19,7 +19,7 @@
       <td>{{ item.color }}</td>
       <td>{{ item.location }}</td>
       <td>{{ item.date | date }}</td>
-      <td><img [src]="item.image" *ngIf="item.image" width="50" height="50" alt="Item image" /></td>
+      <td>{{ item.user.email }}<br>{{ item.user.phone_number }}</td>
     </tr>
   </tbody>
 </table>
