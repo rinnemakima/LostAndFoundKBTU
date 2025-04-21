@@ -33,6 +33,26 @@
   cursor: pointer;
 }
 
+.button-group {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.sort-button {
+  float: right;
+  margin-top: -40px;
+  background-color: #2196f3;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.sort-button:hover {
+  background-color: #0b7dda;
+}
+
 .reportlost-button {
   justify-content: center;
   align-items: center;

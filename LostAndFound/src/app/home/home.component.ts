@@ -7,6 +7,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { LostItemFormComponent } from '../lost-item-form/lost-item-form.component';
 import { CommonModule } from '@angular/common';
 import { FoundItemFormComponent } from '../found-item-form/found-item-form.component';
+import { MatchItemListComponent } from '../match-item-list/match-item-list.component';
 
 @Component({
   selector: 'app-home',
@@ -14,10 +15,19 @@ import { FoundItemFormComponent } from '../found-item-form/found-item-form.compo
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
   providers: [UserService],
-  imports: [LostItemListComponent, FoundItemListComponent, CommonModule]
+  imports: [LostItemListComponent, FoundItemListComponent, CommonModule, MatchItemListComponent]
 })
 export class HomeComponent {
+  showRecentLost = false;
+  showRecentFound = false;
 
+  filterRecentLost() {
+    this.showRecentLost = !this.showRecentLost;
+  }
+
+  filterRecentFound() {
+    this.showRecentFound = !this.showRecentFound;
+}
   constructor(public userService: UserService, private router: Router, private dialog: MatDialog) {}
 
   openLostItemDialog(): void {

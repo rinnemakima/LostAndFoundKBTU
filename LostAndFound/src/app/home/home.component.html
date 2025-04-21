@@ -5,13 +5,24 @@
   </div>
 
   <div class="section">
-    <button *ngIf="userService.isLoggedIn()" (click)="openLostItemDialog()" class="reportlost-button">Report Lost Item</button>
+    <div class="button-group">
+      <button *ngIf="userService.isLoggedIn()" (click)="openLostItemDialog()" class="reportlost-button">Report Lost Item</button>
+    </div>
+    <button (click)="filterRecentLost()" class="sort-button">🔍 View Recent Lost Items</button>
     <h2>🎒 Lost Items</h2>
-    <app-lost-item-list></app-lost-item-list>
+    <app-lost-item-list [recentOnly]="showRecentLost"></app-lost-item-list>
   </div>
   <div class="section">
-    <button *ngIf="userService.isLoggedIn()" (click)="openFoundItemDialog()" class="reportfound-button">Report Found Item</button>
+    <div class="button-group">
+      <button *ngIf="userService.isLoggedIn()" (click)="openFoundItemDialog()" class="reportfound-button">Report Found Item</button>
+    </div>
+    <button (click)="filterRecentFound()" class="sort-button">🔍 View Recent Found Items</button>
     <h2>📦 Found Items</h2>
-    <app-found-item-list></app-found-item-list>
+    <app-found-item-list [recentOnly]="showRecentFound"></app-found-item-list>
+  </div>
+
+  <div class="section">
+    <h2>Matched Items</h2>
+    <app-match-item-list></app-match-item-list>
   </div>
 </div>

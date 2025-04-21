@@ -17,8 +17,6 @@ urlpatterns = [
     path('matches/', match_item_list),  
     path('matches/<int:id>/', MatchItemDetailView.as_view()),  
     path('lost-items/recent/', recent_lost_items_view),
-    path("public-lost-items/", public_lost_items),
-    path("public-found-items/", public_found_items),
     
     path('register/', RegisterView.as_view(), name='register'),
 

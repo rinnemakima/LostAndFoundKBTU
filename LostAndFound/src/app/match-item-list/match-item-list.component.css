@@ -1,0 +1,33 @@
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 0.95rem;
+  }
+  
+  thead {
+    background-color: #4caf50;
+    color: white;
+  }
+  
+  th, td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+  }
+  
+  tr:hover {
+    background-color: #f1f1f1;
+  }
+  
+  tbody tr:last-child td {
+    border-bottom: none;
+  }
+  
+  h2 {
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+    color: #333;
+  }
+  

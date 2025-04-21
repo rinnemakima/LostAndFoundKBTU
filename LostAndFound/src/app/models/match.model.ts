@@ -5,5 +5,6 @@ export interface Match {
   id: number;
   lostItem: LostItem;
   foundItem: FoundItem;
-  status: 'pending' | 'confirmed' | 'rejected';
+  status:  'confirmed';
+  created_at: string;
 }

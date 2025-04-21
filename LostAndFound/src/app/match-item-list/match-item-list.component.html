@@ -1,0 +1,28 @@
+<div class="match-list">
+    <h2>🔗 Matched Items</h2>
+    <table *ngIf="matches.length > 0; else noMatch">
+      <thead>
+        <tr>
+          <th>Lost/Found Item</th>
+          <th>Lost By</th>
+          <th>Contact</th>
+          <th>Found By</th>
+          <th>Contact</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let match of matches">
+          <td>{{ match.lost_item.name }}</td>
+          <td>{{ match.lost_item.user.username }}</td>
+          <td>{{ match.lost_item.user.email }}<br>{{ match.lost_item.user.phone_number }}</td>
+  
+          <td>{{ match.found_item.user.username }}</td>
+          <td>{{ match.found_item.user.email }}<br>{{ match.found_item.user.phone_number }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <ng-template #noMatch>
+      <p>No matched items yet.</p>
+    </ng-template>
+  </div>
+  

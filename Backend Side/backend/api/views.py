@@ -7,7 +7,7 @@ from rest_framework.views import APIView
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from .models import FoundItem, LostItem, MatchItem
-from .serializers import FoundItemSerializer, LostItemSerializer, MatchItemSerializer, UserSerializer
+from .serializers import FoundItemSerializer, LostItemSerializer, MatchItemSerializer, UserSerializer, MatchItemCreateSerializer
 
 from django.contrib.auth.models import User
 from rest_framework import viewsets
@@ -44,89 +44,90 @@ def logout_view(request):
     except Exception as e:
         return Response({"error": str(e)}, status=400)
 
-@api_view(["GET"])
-@permission_classes([])
-def public_lost_items(request):
-    items = LostItem.objects.all()
-    serializer = LostItemSerializer(items, many=True, context={'request': request})
-    return Response(serializer.data)
 
-@api_view(["GET"])
-@permission_classes([])
-def public_found_items(request):
-    items = FoundItem.objects.all()
-    serializer = FoundItemSerializer(items, many=True, context={'request': request})
-    return Response(serializer.data)
-
-@api_view(http_method_names=["POST"]) 
+@api_view(["GET", "POST"])
 @permission_classes([IsAuthenticated])
 def lost_item_list(request):
-    if request.method == "POST":
-        serializer = LostItemSerializer(data=request.data)
+    if request.method == "GET":
+        items = LostItem.objects.all()
+        serializer = LostItemSerializer(items, many=True, context={'request': request})
+        return Response(serializer.data)
+    elif request.method == "POST":
+        serializer = LostItemSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
             lost_item = serializer.save(user=request.user)
 
-            matched_items = FoundItem.objects.filter(
-                name__icontains=lost_item.name,
-                location__icontains=lost_item.location
+            matched_found_items = FoundItem.objects.filter(
+                category=lost_item.category,
+                color__iexact=lost_item.color,
+                location__icontains=lost_item.location,
+                name__icontains=lost_item.name
             )
 
-
-            for found in matched_items:
-                MatchItem.objects.get_or_create(lost_item=lost_item, found_item=found)
-
-            matched_serializer = MatchItemSerializer(MatchItem.objects.filter(lost_item=lost_item), many=True)
+            matches = []
+            for found_item in matched_found_items:
+                match, created = MatchItem.objects.get_or_create(
+                    lost_item=lost_item,
+                    found_item=found_item
+                )
+                matches.append(match)
 
             return Response({
-                "lost_item": LostItemSerializer(lost_item).data,
-                "matches_created": MatchItemSerializer(matched_items, many=True).data
+                "lost_item": LostItemSerializer(lost_item, context={'request': request}).data,
+                "matches": MatchItemSerializer(matches, many=True).data
             }, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
     
 
-@api_view(http_method_names=["POST"]) 
+@api_view(["GET", "POST"])
 @permission_classes([IsAuthenticated])
 def found_item_list(request):
-    serializer = FoundItemSerializer(data=request.data, context={'request': request})
-    if serializer.is_valid():
-        found_item = serializer.save(user=request.user)
+    if request.method == "GET":
+        items = FoundItem.objects.all()
+        serializer = FoundItemSerializer(items, many=True, context={'request': request})
+        return Response(serializer.data)
+    elif request.method == "POST":
+        serializer = FoundItemSerializer(data=request.data, context={'request': request})
+        if serializer.is_valid():
+            found_item = serializer.save(user=request.user)
 
-        matched_lost_items = LostItem.objects.filter(
-            category=found_item.category,
-            color__iexact=found_item.color,
-            location__icontains=found_item.location,
-            name__icontains=found_item.name
-        )
-
-        matches = []
-        for lost_item in matched_lost_items:
-            match = MatchItem.objects.create(
-                lost_item=lost_item,
-                found_item=found_item
+            matched_lost_items = LostItem.objects.filter(
+                category=found_item.category,
+                color__iexact=found_item.color,
+                location__icontains=found_item.location,
+                name__icontains=found_item.name
             )
-            matches.append(match)
-            lost_item.delete()
 
-        return Response({
-            "found_item": FoundItemSerializer(found_item, context={'request': request}).data,
-            "matches": MatchItemSerializer(matches, many=True).data
-        }, status=status.HTTP_201_CREATED)
+            matches = []
+            for lost_item in matched_lost_items:
+                match, created = MatchItem.objects.get_or_create(
+                    lost_item=lost_item,
+                    found_item=found_item
+                )
+                matches.append(match)
 
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response({
+                "found_item": FoundItemSerializer(found_item, context={'request': request}).data,
+                "matches": MatchItemSerializer(matches, many=True).data
+            }, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])
 def match_item_list(request):
     if request.method == 'GET':
-        matches = MatchItem.objects.all()
+        matches = MatchItem.objects.all().select_related('lost_item__user', 'found_item__user')
         serializer = MatchItemSerializer(matches, many=True)
         return Response(serializer.data)
 
     elif request.method == 'POST':
-        serializer = MatchItemSerializer(data=request.data)
+        serializer = MatchItemCreateSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()  
+            serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
