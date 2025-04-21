@@ -30,7 +30,7 @@ class LostItem(models.Model):
     color = models.CharField(max_length=30, blank=True, null=True)
     location = models.CharField(max_length=255)
     date = models.DateField()
-    image = models.ImageField(upload_to='lost_items/', null=True, blank=True)
+    image = models.ImageField(upload_to='media/lost_items/', null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='lost_items')
 
     objects = LostItemManager() 
@@ -53,8 +53,11 @@ class FoundItem(models.Model):
     color = models.CharField(max_length=30, blank=True, null=True)
     location = models.CharField(max_length=255)
     date = models.DateField()
-    image = models.ImageField(upload_to='found_items/', null=True, blank=True)
+    image = models.ImageField(upload_to='media/found_items/', null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='found_items')
+
+    def __str__(self):
+        return f"Found {self.name} reported by {self.user.email}"
     
 class MatchItem(models.Model):
     lost_item = models.ForeignKey(LostItem, on_delete=models.CASCADE)

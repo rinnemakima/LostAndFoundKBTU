@@ -19,7 +19,7 @@
       <td>{{ item.color }}</td>
       <td>{{ item.location }}</td>
       <td>{{ item.date | date }}</td>
-      <td>{{ item.image }}</td>
+      <td><img [src]="item.image" *ngIf="item.image" width="50" height="50" alt="Item image" /></td>
     </tr>
   </tbody>
 </table>

@@ -1,0 +1,42 @@
+<h2>Report Found Item</h2>
+
+<form (ngSubmit)="submitFoundItem()" enctype="multipart/form-data">
+  <label>
+    Name:
+    <input type="text" [(ngModel)]="foundItem.name" name="name" required />
+  </label>
+
+  <label>
+    Category:
+    <select [(ngModel)]="foundItem.category" name="category" required>
+        <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+    </select>
+  </label>
+
+  <label>
+    Color:
+    <input type="text" [(ngModel)]="foundItem.color" name="color" />
+  </label>
+
+  <label>
+    Location Found:
+    <input type="text" [(ngModel)]="foundItem.location" name="location" required />
+  </label>
+
+  <label>
+    Date Found:
+    <input type="date" [(ngModel)]="foundItem.date" name="date" required />
+  </label>
+
+  <label>
+    Description:
+    <textarea [(ngModel)]="foundItem.description" name="description"></textarea>
+  </label>
+
+  <label>
+    Image:
+    <input type="file" (change)="onFileSelected($event)" />
+  </label>
+
+  <button type="submit">Submit Found Item</button>
+</form>

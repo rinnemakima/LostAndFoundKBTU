@@ -33,11 +33,29 @@
   cursor: pointer;
 }
 
+.reportlost-button {
+  justify-content: center;
+  align-items: center;
+  padding: 8px;
+  background-color: #df1616;
+  color: #fff;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.reportfound-button {
+  justify-content: center;
+  align-items: center;
+  padding: 8px;
+  background-color: #4caf50;
+  color: #fff;
+  border-radius: 5px;
+  cursor: pointer;
+}
 .logout-button:hover {
   background-color: #d98e00;
 }
 
-/* Content layout for lost & found items */
 .content {
   display: flex;
   justify-content: space-between;
@@ -45,6 +63,8 @@
 }
 
 .section {
+  justify-content: center;
+  align-items: center;
   flex: 1;
   background-color: #fff;
   padding: 20px;

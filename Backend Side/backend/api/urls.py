@@ -22,4 +22,6 @@ urlpatterns = [
     
     path('register/', RegisterView.as_view(), name='register'),
 
+    path('api/found-items/purge/', FoundItemPurge.as_view()),
+
 ]

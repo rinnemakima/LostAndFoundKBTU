@@ -6,6 +6,7 @@ import { FoundItemListComponent } from '../found-item-list/found-item-list.compo
 import { MatDialog } from '@angular/material/dialog';
 import { LostItemFormComponent } from '../lost-item-form/lost-item-form.component';
 import { CommonModule } from '@angular/common';
+import { FoundItemFormComponent } from '../found-item-form/found-item-form.component';
 
 @Component({
   selector: 'app-home',
@@ -21,6 +22,13 @@ export class HomeComponent {
 
   openLostItemDialog(): void {
     this.dialog.open(LostItemFormComponent, {
+      width: '400px',
+      data: { userEmail: this.userService.getCurrentUserEmail() } 
+    });
+  }
+
+  openFoundItemDialog(): void {
+    this.dialog.open(FoundItemFormComponent, {
       width: '400px',
       data: { userEmail: this.userService.getCurrentUserEmail() } 
     });

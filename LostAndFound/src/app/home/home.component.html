@@ -4,13 +4,13 @@
     <button (click)="logout()" class="logout-button">🚪 Logout</button>
   </div>
 
-  <button *ngIf="userService.isLoggedIn()" (click)="openLostItemDialog()">Report Lost Item</button>
   <div class="section">
+    <button *ngIf="userService.isLoggedIn()" (click)="openLostItemDialog()" class="reportlost-button">Report Lost Item</button>
     <h2>🎒 Lost Items</h2>
     <app-lost-item-list></app-lost-item-list>
   </div>
-
   <div class="section">
+    <button *ngIf="userService.isLoggedIn()" (click)="openFoundItemDialog()" class="reportfound-button">Report Found Item</button>
     <h2>📦 Found Items</h2>
     <app-found-item-list></app-found-item-list>
   </div>

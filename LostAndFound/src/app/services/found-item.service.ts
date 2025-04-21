@@ -26,4 +26,9 @@ export class FoundItemService {
   deleteFoundItem(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}${id}/`);
   }
+
+  purgeOldFoundItems(): Observable<any> {
+    return this.http.delete('http://127.0.0.1:8000/api/found-items/purge/');
+  }
+  
 }

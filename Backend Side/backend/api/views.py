@@ -48,14 +48,14 @@ def logout_view(request):
 @permission_classes([])
 def public_lost_items(request):
     items = LostItem.objects.all()
-    serializer = LostItemSerializer(items, many=True)
+    serializer = LostItemSerializer(items, many=True, context={'request': request})
     return Response(serializer.data)
 
 @api_view(["GET"])
 @permission_classes([])
 def public_found_items(request):
     items = FoundItem.objects.all()
-    serializer = FoundItemSerializer(items, many=True)
+    serializer = FoundItemSerializer(items, many=True, context={'request': request})
     return Response(serializer.data)
 
 @api_view(http_method_names=["POST"]) 
@@ -66,19 +66,16 @@ def lost_item_list(request):
         if serializer.is_valid():
             lost_item = serializer.save(user=request.user)
 
-            matched_items = []
-            found_items = FoundItem.objects.all()
+            matched_items = FoundItem.objects.filter(
+                name__icontains=lost_item.name,
+                location__icontains=lost_item.location
+            )
 
-            for found in found_items:
-                if (
-                        found.category == lost_item.category and
-                        found.name == lost_item.name
-                    ):
-                    match = MatchItem.objects.create(
-                        lost_item=lost_item,
-                        found_item=found
-                    )
-                    matched_items.append(match)
+
+            for found in matched_items:
+                MatchItem.objects.get_or_create(lost_item=lost_item, found_item=found)
+
+            matched_serializer = MatchItemSerializer(MatchItem.objects.filter(lost_item=lost_item), many=True)
 
             return Response({
                 "lost_item": LostItemSerializer(lost_item).data,
@@ -91,14 +88,32 @@ def lost_item_list(request):
 @api_view(http_method_names=["POST"]) 
 @permission_classes([IsAuthenticated])
 def found_item_list(request):
+    serializer = FoundItemSerializer(data=request.data, context={'request': request})
+    if serializer.is_valid():
+        found_item = serializer.save(user=request.user)
 
-    if request.method == "POST":
-        serializer = FoundItemSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save(user=request.user)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+        matched_lost_items = LostItem.objects.filter(
+            category=found_item.category,
+            color__iexact=found_item.color,
+            location__icontains=found_item.location,
+            name__icontains=found_item.name
+        )
+
+        matches = []
+        for lost_item in matched_lost_items:
+            match = MatchItem.objects.create(
+                lost_item=lost_item,
+                found_item=found_item
+            )
+            matches.append(match)
+            lost_item.delete()
+
+        return Response({
+            "found_item": FoundItemSerializer(found_item, context={'request': request}).data,
+            "matches": MatchItemSerializer(matches, many=True).data
+        }, status=status.HTTP_201_CREATED)
+
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])
@@ -176,6 +191,12 @@ class FoundItemDetailView(APIView):
         item = self.get_object(id)
         item.delete()
         return Response({"message": "found item was deleted"}, status=status.HTTP_200_OK)
+
+class FoundItemPurge(APIView):
+    def delete(self, request):
+        cutoff = timezone.now() - timedelta(minutes=1)
+        deleted, _ = FoundItem.objects.filter(created_at__lt=cutoff).delete()
+        return Response({'deleted': deleted}, status=status.HTTP_200_OK)
 
 
 class MatchItemDetailView(APIView):

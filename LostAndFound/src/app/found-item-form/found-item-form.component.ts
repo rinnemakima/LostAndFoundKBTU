@@ -4,14 +4,14 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-lost-item-form',
+  selector: 'app-found-item-form',
   standalone: true,
   imports: [CommonModule, FormsModule],
-  templateUrl: './lost-item-form.component.html',
-  styleUrls: ['./lost-item-form.component.css'],
+  templateUrl: './found-item-form.component.html',
+  styleUrls: ['./found-item-form.component.css'],
 })
-export class LostItemFormComponent {
-  lostItem = {
+export class FoundItemFormComponent {
+  foundItem = {
     name: '',
     description: '',
     category: '',
@@ -28,32 +28,32 @@ export class LostItemFormComponent {
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
-      this.lostItem.image = input.files[0];
+      this.foundItem.image = input.files[0];
     }
   }
 
-  submitLostItem(): void {
+  submitFoundItem(): void {
     const formData = new FormData();
-    formData.append('name', this.lostItem.name);
-    formData.append('description', this.lostItem.description);
-    formData.append('category', this.lostItem.category);
-    formData.append('color', this.lostItem.color);
-    formData.append('location', this.lostItem.location);
-    formData.append('date', this.lostItem.date);
-    if (this.lostItem.image) {
-      formData.append('image', this.lostItem.image);
+    formData.append('name', this.foundItem.name);
+    formData.append('description', this.foundItem.description);
+    formData.append('category', this.foundItem.category);
+    formData.append('color', this.foundItem.color);
+    formData.append('location', this.foundItem.location);
+    formData.append('date', this.foundItem.date);
+    if (this.foundItem.image) {
+      formData.append('image', this.foundItem.image);
     }
 
     console.log('Token:', localStorage.getItem('access_token'));
 
-    this.http.post('http://127.0.0.1:8000/api/lost-items/', formData).subscribe({
+    this.http.post('http://127.0.0.1:8000/api/found-items/', formData).subscribe({
       next: (res) => {
-        alert('Lost item reported successfully!');
+        alert('Found item reported successfully!');
         console.log(res);
       },
       error: (err) => {
         console.error('Submission failed', err);
-        alert('Something went wrong while submitting the lost item.');
+        alert('Something went wrong while submitting the found item.');
       }
     });
   }

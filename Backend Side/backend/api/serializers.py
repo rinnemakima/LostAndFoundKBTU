@@ -19,8 +19,8 @@ class UserSerializer(serializers.Serializer):
 
 class MatchItemSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
-    lost_item = serializers.IntegerField()
-    found_item = serializers.IntegerField()
+    lost_item = serializers.PrimaryKeyRelatedField(queryset=LostItem.objects.all())
+    found_item = serializers.PrimaryKeyRelatedField(queryset=FoundItem.objects.all())
     created_at = serializers.DateTimeField(read_only=True)
 
     def create(self, validated_data):
@@ -31,18 +31,39 @@ class MatchItemSerializer(serializers.Serializer):
         instance.found_item_id = validated_data.get('found_item', instance.found_item_id)
         instance.save()
         return instance
+    
+    class Meta:
+        model = MatchItem
+        fields = ['id', 'lost_item', 'found_item', 'created_at']
 
 
 class LostItemSerializer(serializers.ModelSerializer):
+    image = serializers.SerializerMethodField()
+
+    def get_image(self, obj):
+        request = self.context.get('request')
+        if obj.image and hasattr(obj.image, 'url'):
+            return request.build_absolute_uri(obj.image.url) if request else obj.image.url
+        return None
+
     class Meta:
         model = LostItem
         fields = ['name', 'description', 'category', 'color', 'location', 'date', 'image']
         read_only_fields = ['user']
 
+
+
 class FoundItemSerializer(serializers.ModelSerializer):
+    image = serializers.SerializerMethodField()
+
+    def get_image(self, obj):
+        request = self.context.get('request')
+        if obj.image and hasattr(obj.image, 'url'):
+            return request.build_absolute_uri(obj.image.url) if request else obj.image.url
+        return None
+
     class Meta:
         model = FoundItem
         fields = ['name', 'description', 'category', 'color', 'location', 'date', 'image']
         read_only_fields = ['user']
-
 
